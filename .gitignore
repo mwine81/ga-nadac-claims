@@ -51,4 +51,6 @@ pytest_cache/
 .pyre/
 
 # Local config
-config.local.py
+config.local.
+
+.env
