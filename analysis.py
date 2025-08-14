@@ -22,3 +22,5 @@ def get_margin_stats() -> dict:
     .to_dict(as_series=False)  # Convert to dictionary with series as values
     )
 
+
+

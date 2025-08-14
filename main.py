@@ -1,4 +1,4 @@
-from figures.plotting import plot_price_distribution
+from figures.plotting import plot_price_distribution, p
 
 
 if __name__ == "__main__":
