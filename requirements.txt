@@ -4,3 +4,4 @@ patito
 matplotlib
 pyarrow
 pandas
+seaborn

@@ -73,3 +73,15 @@ def margin_stats() -> list[pl.Expr]:
 
 def cum_margin() -> pl.Expr:
     return c.margin_over_nadac.cum_sum().round(2).alias('cumulative_margin')
+
+def predicate_underwater() -> pl.Expr:
+    return c.margin_over_nadac < 0
+
+def unit_margin() -> pl.Expr:
+    return (c.margin_over_nadac / c.qty).round(4).alias('unit_margin')
+
+def median_quantity():
+    return c.qty.median().cast(pl.Int64).alias('median_qty')
+
+def extract_pbm() -> pl.Expr:
+    return c.source.str.split("_").list.first().str.to_uppercase().alias('pbm')
