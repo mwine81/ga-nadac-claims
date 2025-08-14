@@ -54,3 +54,4 @@ pytest_cache/
 config.local.
 
 .env
+scratch.py

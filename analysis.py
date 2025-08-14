@@ -2,38 +2,23 @@ import polars as pl
 from polars import col as c
 import polars.selectors as cs
 from tables import load_base_table
+from expressions import get_margin_quantile, margin_stats, cum_margin
+from config import FIGURE_DIR
 
-def margin_greater_than(value) -> pl.Expr:
-    """
-    Returns a Polars expression that filters rows where the 'margin_over_nadac' column is greater than the specified value.
-    """
-    return c.margin_over_nadac >= value
 
-def margin_less_than(value) -> pl.Expr:
+def get_all_margin_quantiles(lf: pl.LazyFrame = load_base_table(), min_quantile: int = 1, max_quantile: int = 99) -> pl.LazyFrame:
     """
-    Returns a Polars expression that filters rows where the 'margin_over_nadac' column is less than the specified value.
-    """
-    return c.margin_over_nadac < value
+    Retrieves all margin quantiles from min_quantile to max_quantile.
 
-def classify_margin(high, low) -> pl.Expr:
     """
-    Classifies the 'margin_over_nadac' column into categories.
-    """
+    # list comprehension to generate the quantile expressions for values between min_quantile and max_quantile
+    return pl.concat([lf.select(get_margin_quantile(q), pl.lit(q).alias('quantile') ) for q in pl.arange(min_quantile, max_quantile + 1, 1, eager=True)]).with_columns(cum_margin())
+
+def get_margin_stats() -> dict:
     return (
-        pl.when(margin_greater_than(high)).then(pl.lit("high"))
-        .when(margin_less_than(low)).then(pl.lit("low"))
-        .otherwise(pl.lit("other"))
-        .alias("margin_classification")
+    load_base_table()
+    .select(margin_stats())
+    .collect(engine='streaming')
+    .to_dict(as_series=False)  # Convert to dictionary with series as values
     )
 
-(
-load_base_table()
-.collect(engine='streaming')
-.group_by(c.affiliate)
-.agg(
-    c.margin_over_nadac.median().alias("median_margin"),
-    c.margin_over_nadac.mean().alias("mean_margin"),
-)
-
-.glimpse()
-)

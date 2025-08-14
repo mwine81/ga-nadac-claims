@@ -1,4 +1,6 @@
 polars
 dotenv
 patito
-duckdb
+matplotlib
+pyarrow
+pandas
