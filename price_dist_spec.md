@@ -1,4 +1,0 @@
-The purpose of this document is to outline the specifications for the price distribution analysis within the Georgia NADAC Claims project. This analysis aims to provide insights into the pricing patterns and trends of pharmacy claims in Georgia, with a specific focus on the NADAC (National Average Drug Acquisition Cost) pricing.
-# Price Distribution Specification Plot
-
-The plot will use the get_all_margin_quantiles function to retrieve the margin quantiles for the specified price range. The chart will contain a bar chart that plots the cumulative margin over NADAC for each quantile. The chart may add additional context by including reference lines for key thresholds or averages. statistics on margin may be found from the get_margin_stats function. This chart will be used in a publication so it should look professional. Please ensure values are formatted to USD when appropriate. Please add the functions to the analysis.py file.
