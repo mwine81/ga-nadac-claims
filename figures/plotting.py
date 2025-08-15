@@ -394,7 +394,9 @@ def box_margin_plot(
     base = (load_base_table()
         .filter(c.product == product)
     )
+    
     median_qty = base.select(median_quantity()).collect(engine='streaming').item()
+
     data = (
     base
     .with_columns(extract_pbm())
