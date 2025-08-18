@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 from analysis import starndard_margin_analysis
 
-def plot_price_distribution(min_quantile: int = 1, max_quantile: int = 99, output: Path | None = None) -> Path:
+def plot_price_distribution(min_quantile: int = 1, max_quantile: int = 99, output: Path | None = None, plot_nadac = False) -> Path:
     """Create a publication-quality chart of margin distribution & cumulative margin.
 
     Features:
@@ -207,6 +207,12 @@ def plot_price_distribution(min_quantile: int = 1, max_quantile: int = 99, outpu
     for spine in ['top', 'right']:
         ax1.spines[spine].set_visible(False)
         ax2.spines[spine].set_visible(False)
+
+    # do not add to legend but add a label that indicates NADAC Plus $12.40 to the line
+    if plot_nadac:
+        # set opacity to 0.5
+        ax2.plot(df['quantile'], df['cumulative_nadac_fee'], color='green', linestyle='--', linewidth=2, label='Cumulative NADAC Fee', alpha=0.3)
+        ax2.text(0.95, 0.95, 'NADAC Plus $12.40', transform=ax2.transAxes, fontsize=10, verticalalignment='top', horizontalalignment='right')
 
     fig.tight_layout()
     output.parent.mkdir(exist_ok=True, parents=True)

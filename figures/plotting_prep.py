@@ -1,8 +1,15 @@
 
 from analysis import get_all_margin_quantiles
 import polars as pl
+from polars import col as c
 
-def prepare_quantile_distribution(min_quantile: int = 1, max_quantile: int = 99) -> pl.DataFrame:
+def nadac_pricing(fee) -> pl.Expr:
+    return pl.lit(fee).alias('nadac_fee')
+
+def add_nadac_cum_sum(data, fee):
+    return data.with_columns(nadac_pricing(fee)).with_columns(c.nadac_fee.cum_sum().round(2).alias('cumulative_nadac_fee')).drop('nadac_fee')
+
+def prepare_quantile_distribution(min_quantile: int = 1, max_quantile: int = 99, nadac_fee: float = 12.40) -> pl.DataFrame:
     """Collect quantile thresholds with cumulative margin for plotting.
 
     Returns a DataFrame with columns:
@@ -16,4 +23,5 @@ def prepare_quantile_distribution(min_quantile: int = 1, max_quantile: int = 99)
         qlf.rename({first_col: 'margin_threshold'})
            .collect(engine='streaming')
            .sort('quantile')
+           .pipe(add_nadac_cum_sum, nadac_fee)
     )
